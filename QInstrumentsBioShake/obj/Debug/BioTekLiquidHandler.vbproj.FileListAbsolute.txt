@@ -1,0 +1,6 @@
+C:\Users\AAS\Documents\GitHub\VWorks-Bioshake\BioTekLiquidHandler\obj\Debug\BioTekLiquidHandler.vbprojResolveAssemblyReference.cache
+C:\Users\AAS\Documents\GitHub\VWorks-Bioshake\BioTekLiquidHandler\obj\Debug\Interop.IWorksDriver.dll
+C:\Users\AAS\Documents\GitHub\VWorks-Bioshake\BioTekLiquidHandler\obj\Debug\BioTekLiquidHandler.vbproj.ResolveComReference.cache
+C:\Users\AAS\Documents\GitHub\VWorks-Bioshake\BioTekLiquidHandler\obj\Debug\BioTekLiquidHandler.Diags.resources
+C:\Users\AAS\Documents\GitHub\VWorks-Bioshake\BioTekLiquidHandler\obj\Debug\BioTekLiquidHandler.Resources.resources
+C:\Users\AAS\Documents\GitHub\VWorks-Bioshake\BioTekLiquidHandler\obj\Debug\BioTekLiquidHandler.vbproj.GenerateResource.Cache

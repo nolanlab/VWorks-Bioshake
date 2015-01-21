@@ -1,0 +1,13 @@
+C:\Users\AAS\Documents\GitHub\VWorks-Bioshake\BioTekLiquidHandler\bin\Debug\Plugins\QInstrumentsBioShake.dll
+C:\Users\AAS\Documents\GitHub\VWorks-Bioshake\BioTekLiquidHandler\bin\Debug\Plugins\QInstrumentsBioShake.pdb
+C:\Users\AAS\Documents\GitHub\VWorks-Bioshake\BioTekLiquidHandler\bin\Debug\Plugins\QInstrumentsBioShake.xml
+C:\Users\AAS\Documents\GitHub\VWorks-Bioshake\BioTekLiquidHandler\bin\Debug\Plugins\QInstrumentsBioShake.tlb
+C:\Users\AAS\Documents\GitHub\VWorks-Bioshake\BioTekLiquidHandler\bin\Debug\Plugins\Interop.IWorksDriver.dll
+C:\Users\AAS\Documents\GitHub\VWorks-Bioshake\BioTekLiquidHandler\obj\Debug\Interop.IWorksDriver.dll
+C:\Users\AAS\Documents\GitHub\VWorks-Bioshake\BioTekLiquidHandler\obj\Debug\QInstrumentsBioShake.vbproj.ResolveComReference.cache
+C:\Users\AAS\Documents\GitHub\VWorks-Bioshake\BioTekLiquidHandler\obj\Debug\QInstrumentsBioShake.Diags.resources
+C:\Users\AAS\Documents\GitHub\VWorks-Bioshake\BioTekLiquidHandler\obj\Debug\QInstrumentsBioShake.Resources.resources
+C:\Users\AAS\Documents\GitHub\VWorks-Bioshake\BioTekLiquidHandler\obj\Debug\QInstrumentsBioShake.vbproj.GenerateResource.Cache
+C:\Users\AAS\Documents\GitHub\VWorks-Bioshake\BioTekLiquidHandler\obj\Debug\QInstrumentsBioShake.dll
+C:\Users\AAS\Documents\GitHub\VWorks-Bioshake\BioTekLiquidHandler\obj\Debug\QInstrumentsBioShake.xml
+C:\Users\AAS\Documents\GitHub\VWorks-Bioshake\BioTekLiquidHandler\obj\Debug\QInstrumentsBioShake.pdb
