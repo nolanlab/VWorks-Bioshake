@@ -142,7 +142,7 @@ Public Class BioShakeVWorksPluginDriver
     End Function
 
     Public Function Get32x32Bitmap(ByVal CommandName As String) As stdole.IPictureDisp Implements IWorksDriver.IWorksDriver.Get32x32Bitmap
-        Dim img As System.Drawing.Bitmap = My.Resources.icon
+        Dim img As System.Drawing.Bitmap = My.Resources.LHC_app
         Return (Microsoft.VisualBasic.Compatibility.VB6.Support.ImageToIPictureDisp(img))
     End Function
 

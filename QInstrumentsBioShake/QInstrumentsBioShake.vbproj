@@ -112,7 +112,6 @@
       <CustomToolNamespace>My</CustomToolNamespace>
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
-    <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="IWorksDriver">
@@ -135,7 +134,10 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icon.bmp" />
+    <None Include="Resources\LHC_app.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\LHC app.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
