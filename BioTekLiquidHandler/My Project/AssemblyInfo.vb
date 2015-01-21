@@ -8,10 +8,10 @@ Imports System.Runtime.InteropServices
 
 ' Review the values of the assembly attributes
 
-<Assembly: AssemblyTitle("BioTekLiquidHandler")> 
+<Assembly: AssemblyTitle("QInstrumentsBioShake")> 
 <Assembly: AssemblyDescription("")> 
 <Assembly: AssemblyCompany("Nolan Lab")> 
-<Assembly: AssemblyProduct("BioTekLiquidHandler")> 
+<Assembly: AssemblyProduct("QInstrumentsBioShake")> 
 <Assembly: AssemblyCopyright("")> 
 <Assembly: AssemblyTrademark("")> 
 

@@ -9,8 +9,8 @@
     </SchemaVersion>
     <ProjectGuid>{45A2CB37-6904-4467-AD52-3718D3983CB8}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>BioTekLiquidHandler</RootNamespace>
-    <AssemblyName>BioTekLiquidHandler</AssemblyName>
+    <RootNamespace>QInstrumentsBioShake</RootNamespace>
+    <AssemblyName>QInstrumentsBioShake</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MyType>Windows</MyType>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
@@ -21,8 +21,8 @@
     <DebugType>full</DebugType>
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
-    <OutputPath>..\..\..\..\..\..\..\Program Files\Agilent Technologies\VWorks\Plugins\</OutputPath>
-    <DocumentationFile>BioTekLiquidHandler.xml</DocumentationFile>
+    <OutputPath>..\..\..\..\..\..\Program Files\Agilent Technologies\VWorks\Plugins\</OutputPath>
+    <DocumentationFile>QInstrumentsBioShake.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
     <RegisterForComInterop>true</RegisterForComInterop>
   </PropertyGroup>
@@ -32,7 +32,7 @@
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>BioTekLiquidHandler.xml</DocumentationFile>
+    <DocumentationFile>QInstrumentsBioShake.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
     <RegisterForComInterop>true</RegisterForComInterop>
   </PropertyGroup>
@@ -49,9 +49,6 @@
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BTILHCRunner">
-      <HintPath>..\..\..\..\..\..\..\Program Files\BioTek\Liquid Handling Control 2.16\BTILHCRunner.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.VisualBasic.Compatibility" />
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
@@ -70,7 +67,7 @@
     <Import Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BioTekVWorksPluginDriver.vb" />
+    <Compile Include="BioShakeVWorksPluginDriver.vb" />
     <Compile Include="Diags.Designer.vb">
       <DependentUpon>Diags.vb</DependentUpon>
     </Compile>
@@ -140,9 +137,6 @@
     <None Include="Resources\LHC_app.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="LHC_Installation_Folder.inf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <None Include="Resources\LHC app.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
