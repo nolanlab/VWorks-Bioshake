@@ -15,13 +15,9 @@ QInstrumentsBioShake
   Overrides the current thread's CurrentUICulture property for all
   resource lookups using this strongly typed resource class.
 </summary>
-</member><member name="P:QInstrumentsBioShake.My.Resources.Resources.LHC_app">
+</member><member name="P:QInstrumentsBioShake.My.Resources.Resources.icon">
 	<summary>
   Looks up a localized resource of type System.Drawing.Bitmap.
-</summary>
-</member><member name="P:QInstrumentsBioShake.My.Resources.Resources.LHC_app1">
-	<summary>
-  Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
 </summary>
 </member><member name="T:QInstrumentsBioShake.My.Resources.Resources">
 	<summary>
