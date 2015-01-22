@@ -322,7 +322,6 @@ Public Class BioShakeVWorksPluginDriver
     End Function
 
     Public Function PlatePickedUp(ByVal PlateInfoXML As String) As IWorksDriver.ReturnCode Implements IWorksDriver.IWorksDriver.PlatePickedUp
-        ' API docs, wat?
         serialPort.Write("setElmLockPos" & vbCr)
         Return IWorksDriver.ReturnCode.RETURN_SUCCESS
     End Function
@@ -356,6 +355,7 @@ Public Class BioShakeVWorksPluginDriver
 
     Public Function CloseDiagsDialog() As IWorksDriver.ReturnCode Implements IWorksDriver.IWorksDiags.CloseDiagsDialog
         frmDiags.Hide()
+        controllerInstance.OnCloseDiagsDialog(Me)
         Return IWorksDriver.ReturnCode.RETURN_SUCCESS
     End Function
 
