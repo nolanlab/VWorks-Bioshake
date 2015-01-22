@@ -2,14 +2,6 @@
 
     Private plugin As BioShakeVWorksPluginDriver
 
-    Private Sub Diags_FormClosing(sender As Object, e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
-        ' Do not dispose of the diagnostics form if closed by the (x) button.
-        If e.CloseReason = Windows.Forms.CloseReason.UserClosing Then
-            e.Cancel = True
-            Me.Hide()
-        End If
-    End Sub
-
     Private Sub Diags_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         'Load options into the comm port combo.
         For Each sp As String In My.Computer.Ports.SerialPortNames

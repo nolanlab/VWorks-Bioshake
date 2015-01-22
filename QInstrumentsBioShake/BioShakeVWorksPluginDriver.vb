@@ -9,6 +9,12 @@ Public Class BioShakeVWorksPluginDriver
     Implements IWorksDriver.IWorksDriver
     Implements IWorksDriver.IWorksDiags
 
+    Private Structure shakeParams
+        Public speed As String
+        Public duration As String
+        Public acceleration As String
+    End Structure
+
     Private Enum ShakeState
         Active = 0
         Stopping = 1
@@ -32,8 +38,9 @@ Public Class BioShakeVWorksPluginDriver
     Private WithEvents frmDiags As Diags = New Diags(Me)
 
     Public Sub Abort(ByVal ErrorContext As String) Implements IWorksDriver.IWorksDriver.Abort
-        If activeProfile IsNot Nothing And activeProfile.initialized Then ' FIXME
-            ' TODO
+        If activeProfile IsNot Nothing And activeProfile.initialized Then
+            stopShake()
+            serialPort.Write("setElmUnlockPos" & vbCr)
         End If
     End Sub
 
@@ -41,6 +48,24 @@ Public Class BioShakeVWorksPluginDriver
         serialPort.Write("setEcoMode" & vbCr)
         serialPort.Close()
     End Sub
+
+    Private Function commandToShakeParams(ByRef xcommand As XDocument) As shakeParams
+        Dim result As New shakeParams
+
+        For Each parameter As XElement In xcommand...<Parameter>
+            If parameter.@Name = "Shake Rate" Then
+                result.speed = parameter.@Value
+            End If
+            If parameter.@Name = "Shake Time" Then
+                result.duration = parameter.@Value
+            End If
+            If parameter.@Name = "Shake Acceleration" Then
+                result.acceleration = parameter.@Value
+            End If
+        Next
+
+        Return result
+    End Function
 
     Public Function Command(ByVal CommandXML As String) As IWorksDriver.ReturnCode Implements IWorksDriver.IWorksDriver.Command
         If activeProfile Is Nothing Or activeProfile.initialized = False Then
@@ -58,9 +83,8 @@ Public Class BioShakeVWorksPluginDriver
                 status = shake(xcommand)
                 serialPort.Write("setElmUnlockPos" & vbCr)
             Case "Stop Shaker"
-                serialPort.Write("soff" & vbCr)
-                Thread.Sleep(3000)
-                waitForHomed()
+                stopShake()
+                serialPort.Write("setElmUnlockPos" & vbCr)
             Case "Clamp Plate"
                 serialPort.Write("setElmLockPos" & vbCr)
             Case "Declamp Plate"
@@ -70,41 +94,33 @@ Public Class BioShakeVWorksPluginDriver
         Return status
     End Function
 
+    Private Sub stopShake()
+        serialPort.Write("soff" & vbCr)
+        Thread.Sleep(3000)
+        waitForHomed()
+    End Sub
+
     Private Function shake(ByRef xcommand As XDocument) As IWorksDriver.ReturnCode
-        Dim shakeRate As String = ""
-        Dim shakeAcceleration As String = ""
-        Dim shakeDuration As String = ""
+        Dim params As shakeParams = commandToShakeParams(xcommand)
 
-        For Each parameter As XElement In xcommand...<Parameter>
-            If parameter.@Name = "Shake Rate" Then
-                shakeRate = parameter.@Value
-            End If
-            If parameter.@Name = "Shake Time" Then
-                shakeDuration = parameter.@Value
-            End If
-            If parameter.@Name = "Shake Acceleration" Then
-                shakeAcceleration = parameter.@Value
-            End If
-        Next
-
-        If shakeRate = "" Then
+        If params.speed = "" Then
             errorString = "Shake rate was not specified."
             Return IWorksDriver.ReturnCode.RETURN_FAIL
         End If
 
-        If shakeAcceleration = "" Then
+        If params.acceleration = "" Then
             errorString = "Shake acceleration was not specified."
             Return IWorksDriver.ReturnCode.RETURN_FAIL
         End If
 
-        If shakeDuration = "" Then
+        If params.duration = "" Then
             errorString = "Shake duration was not specified."
             Return IWorksDriver.ReturnCode.RETURN_FAIL
         End If
 
         serialPort.Write("setElmLockPos" & vbCr)
-        serialPort.Write("setShakeTargetSpeed" & shakeRate & vbCr)
-        serialPort.Write("shakeOnWithRuntime" & shakeDuration & vbCr)
+        serialPort.Write("setShakeTargetSpeed" & params.speed & vbCr)
+        serialPort.Write("shakeOnWithRuntime" & params.duration & vbCr)
 
         ' Ughhhh
         Thread.Sleep(3000)
@@ -115,6 +131,7 @@ Public Class BioShakeVWorksPluginDriver
 
     End Function
 
+    ' Waits for the shaker to come to the home position.
     Private Sub waitForHomed()
         serialPort.DiscardInBuffer()
 
@@ -147,22 +164,14 @@ Public Class BioShakeVWorksPluginDriver
     End Function
 
     Public Function GetDescription(ByVal CommandXML As String, ByVal Verbose As Boolean) As String Implements IWorksDriver.IWorksDriver.GetDescription
-        'Verbose indicates if the description goes in the log or under a task icon. Not used here.
-        Dim programName As String = ""
-
+        'Verbose indicates if the description goes in the log or under a task icon.
         Dim xcommand As XDocument = XDocument.Parse(CommandXML)
-        For Each parameter As XElement In xcommand...<Parameter>
-            If parameter.@Name = "Program name" Then
-                Dim programPath As String = parameter.@Value
-                programName = Path.GetFileName(programPath)
-            End If
-        Next
-
-        If programName = "" Then
-            programName = "shake"
+        Dim params As shakeParams = commandToShakeParams(xcommand)
+        If params.speed <> "" AndAlso params.duration <> "" Then
+            Return "Shake at " & params.speed & " RPMs, " & params.duration & " s"
+        Else
+            Return "Shake"
         End If
-
-        Return "Run " & programName
     End Function
 
     Public Function GetErrorInfo() As String Implements IWorksDriver.IWorksDriver.GetErrorInfo
@@ -234,6 +243,8 @@ Public Class BioShakeVWorksPluginDriver
                 </MetaData>
             </Velocity11>
 
+        ' TODO: I'd like to remove the Clamp Plate, Declamp Plate and Stop Shaker commands. Why would you use them?
+
         Return metadata.Declaration.ToString() + metadata.ToString()
     End Function
 
@@ -274,32 +285,45 @@ Public Class BioShakeVWorksPluginDriver
 
         serialPort.Write("shakeGoHome" & vbCr)
 
+        ' Ughhhh
+        Thread.Sleep(3000)
+
+        waitForHomed()
+
         activeProfile.initialized = True
 
         Return IWorksDriver.ReturnCode.RETURN_SUCCESS
     End Function
 
     Public Function IsLocationAvailable(ByVal LocationAvailableXML As String) As Boolean Implements IWorksDriver.IWorksDriver.IsLocationAvailable
+        ' See API docs for why this is basically always true.
         Return True
     End Function
 
     Public Function MakeLocationAvailable(ByVal LocationAvailableXML As String) As IWorksDriver.ReturnCode Implements IWorksDriver.IWorksDriver.MakeLocationAvailable
-        ' TODO check profile and port
-        serialPort.Write("setElmUnlockPos" & vbCr)
-        Thread.Sleep(3000)
-        Dim returnValue = serialPort.ReadLine()
-        If returnValue = "ok" Then
-            Return IWorksDriver.ReturnCode.RETURN_SUCCESS
+        If activeProfile IsNot Nothing And activeProfile.initialized Then
+            serialPort.Write("setElmUnlockPos" & vbCr)
+            Thread.Sleep(3000)
+            Dim returnValue = serialPort.ReadLine()
+            If returnValue = "ok" Then
+                Return IWorksDriver.ReturnCode.RETURN_SUCCESS
+            Else
+                Return IWorksDriver.ReturnCode.RETURN_FAIL
+            End If
         Else
+            errorString = "Shaker not initialized."
             Return IWorksDriver.ReturnCode.RETURN_FAIL
         End If
     End Function
 
     Public Function PlateDroppedOff(ByVal PlateInfoXML As String) As IWorksDriver.ReturnCode Implements IWorksDriver.IWorksDriver.PlateDroppedOff
+        ' API docs, wat?
         Return IWorksDriver.ReturnCode.RETURN_SUCCESS
     End Function
 
     Public Function PlatePickedUp(ByVal PlateInfoXML As String) As IWorksDriver.ReturnCode Implements IWorksDriver.IWorksDriver.PlatePickedUp
+        ' API docs, wat?
+        serialPort.Write("setElmLockPos" & vbCr)
         Return IWorksDriver.ReturnCode.RETURN_SUCCESS
     End Function
 
@@ -319,6 +343,15 @@ Public Class BioShakeVWorksPluginDriver
     'Formsy stuff. Would be nicer in Diags.vb but not sure how to make VWorks find the pointer to the class implementing IWorksDriver.IWorksDiags.
     Private Sub DiagsForm_FormClosed(ByVal sender As Object, ByVal e As FormClosedEventArgs) Handles frmDiags.FormClosed
         controllerInstance.OnCloseDiagsDialog(Me)
+    End Sub
+
+    Private Sub Diags_FormClosing(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles frmDiags.FormClosing
+        ' Do not dispose of the diagnostics form if closed by the (x) button.
+        If e.CloseReason = Windows.Forms.CloseReason.UserClosing Then
+            e.Cancel = True
+            frmDiags.Hide()
+            controllerInstance.OnCloseDiagsDialog(Me)
+        End If
     End Sub
 
     Public Function CloseDiagsDialog() As IWorksDriver.ReturnCode Implements IWorksDriver.IWorksDiags.CloseDiagsDialog
