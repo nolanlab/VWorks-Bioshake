@@ -58,11 +58,27 @@
     End Sub
 
     Private Sub btnInitializeProfile_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnInitializeProfile.Click
-        If plugin.activeProfile.initialized Then
+        If plugin.activeProfile IsNot Nothing AndAlso plugin.activeProfile.initialized Then
             plugin.Close()
         End If
 
-        Dim status = plugin.Initialize("") 'TODO
+        Dim profileName = cmboProfile.Text
+
+        Dim initData As XDocument =
+    <?xml version='1.0' encoding='ASCII'?>
+    <Velocity11 file='MetaData' md5sum='fdf869950238e3cfae2d56342329cf5a' version='1.0'>
+        <Command Compiler='0' Editor='0' Name='Initialize' NextTaskToExecute='1' RequiresRefresh='0' TaskRequiresLocation='1' VisibleAvailability='1'>
+            <Parameters>
+                <Parameter Name='Profile' Scriptable='1' Style='0' Type='2' Value='BioShake 3000 elm'>
+                    <Ranges>
+                        <Range Value=<%= profileName %>/>
+                    </Ranges>
+                </Parameter>
+            </Parameters>
+        </Command>
+    </Velocity11>
+
+        Dim status = plugin.Initialize(initData.Declaration.ToString() + initData.ToString())
         If status = IWorksDriver.ReturnCode.RETURN_SUCCESS Then
             btnInitializeProfile.Text = "Reinitialize Profile"
         End If

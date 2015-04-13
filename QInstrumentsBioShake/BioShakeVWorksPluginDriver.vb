@@ -38,13 +38,14 @@ Public Class BioShakeVWorksPluginDriver
     Private WithEvents frmDiags As Diags = New Diags(Me)
 
     Public Sub Abort(ByVal ErrorContext As String) Implements IWorksDriver.IWorksDriver.Abort
-        If activeProfile IsNot Nothing And activeProfile.initialized Then
+        If activeProfile IsNot Nothing AndAlso activeProfile.initialized Then
             stopShake()
             serialPort.Write("setElmUnlockPos" & vbCr)
         End If
     End Sub
 
     Public Sub Close() Implements IWorksDriver.IWorksDriver.Close
+        ' TODO if initialized
         serialPort.Write("setEcoMode" & vbCr)
         serialPort.Close()
     End Sub
@@ -95,7 +96,8 @@ Public Class BioShakeVWorksPluginDriver
     End Function
 
     Private Sub stopShake()
-        serialPort.Write("soff" & vbCr)
+        ' TODO if initialized
+        serialPort.Write("soff" & vbCr) ' FIXME the port is closed
         Thread.Sleep(3000)
         waitForHomed()
     End Sub
@@ -254,20 +256,22 @@ Public Class BioShakeVWorksPluginDriver
     End Function
 
     Public Function Initialize(ByVal CommandXML As String) As IWorksDriver.ReturnCode Implements IWorksDriver.IWorksDriver.Initialize
-        'Dim xcommand As XDocument = XDocument.Parse(CommandXML)
-        'For Each parameter As XElement In xcommand...<Parameter>
-        '    If parameter.@Name = "Profile" Then
-        '        Dim profileName = parameter.@Value
-        '        activeProfile = Profile.FromRegistry(profileName)
-        '    End If
-        'Next
+        If activeProfile IsNot Nothing AndAlso activeProfile.initialized = True Then
+            Return IWorksDriver.ReturnCode.RETURN_SUCCESS
+        End If
+
+        Dim xcommand As XDocument = XDocument.Parse(CommandXML)
+        For Each parameter As XElement In xcommand...<Parameter>
+            If parameter.@Name = "Profile" Then
+                Dim profileName = parameter.@Value
+                activeProfile = Profile.FromRegistry(profileName)
+            End If
+        Next
 
         If activeProfile Is Nothing Then
             errorString = "Error loading profile."
             Return IWorksDriver.ReturnCode.RETURN_FAIL
         End If
-
-        'Dim returnValue As Runner_ReturnCode
 
         serialPort.PortName = activeProfile.commPort
         serialPort.BaudRate = 9600
@@ -346,10 +350,13 @@ Public Class BioShakeVWorksPluginDriver
 
     Private Sub Diags_FormClosing(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles frmDiags.FormClosing
         ' Do not dispose of the diagnostics form if closed by the (x) button.
+        MsgBox("closing")
         If e.CloseReason = Windows.Forms.CloseReason.UserClosing Then
             e.Cancel = True
-            frmDiags.Hide()
             controllerInstance.OnCloseDiagsDialog(Me)
+            frmDiags.Hide()
+        Else
+            MsgBox("Not true")
         End If
     End Sub
 
